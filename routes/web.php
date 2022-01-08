@@ -25,18 +25,7 @@ Route::get('shopifytest', function (Rest $client) {
     return $response->getDecodedBody();
 });
 
-Route::get('translatetest', function () {
-    $translationConfig = [
-        'keyFilePath' => storage_path('app/' . config('services.google_cloud.key_file')),
-        'suppressKeyFileNotice' => true,
-    ];
-
-    if (config('services.google_cloud.translation_default_target')) {
-        $translationConfig['target'] = config('services.google_cloud.translation_default_target');
-    }
-
-    $translate = new TranslateClient($translationConfig);
-
+Route::get('translatetest', function (TranslateClient $translate) {
     $result = $translate->translate(
         'Hello world!'
     );
