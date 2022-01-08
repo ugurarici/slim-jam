@@ -37,6 +37,11 @@ return [
         'app_host' => env('SHOPIFY_APP_HOST'),
         'api_version' => env('SHOPIFY_API_VERSION', "2022-01"),
         'store_domain' => env('SHOPIFY_STORE_DOMAIN'),
-    ]
+    ],
+
+    'google_cloud' => [
+        'key_file' => env('GOOGLE_TRANSLATION_API_KEY_FILE_NAME'),
+        'translation_default_target' => env('GOOGLE_TRANSLATION_DEFAULT_TARGET', null),
+    ],
 
 ];
