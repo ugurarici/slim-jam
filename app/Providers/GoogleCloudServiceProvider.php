@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Exception;
 use Google\Cloud\Translate\V2\TranslateClient;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class GoogleCloudServiceProvider extends ServiceProvider
@@ -15,10 +17,8 @@ class GoogleCloudServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(TranslateClient::class, function ($app) {
-            //  @TODO: check if key file exists
-
             $translationConfig = [
-                'keyFilePath' => storage_path('app/' . config('services.google_cloud.key_file')),
+                'keyFilePath' => Storage::path(config('services.google_cloud.key_file')),
                 'suppressKeyFileNotice' => true,
             ];
 
