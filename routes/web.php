@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Shopify\Clients\Rest;
 use Google\Cloud\Translate\V2\TranslateClient;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +29,23 @@ Route::get('shopifytest', function (Rest $client) {
 
 Route::get('translatetest', function (TranslateClient $translate) {
     $result = $translate->translate(
-        'Hello world!'
+        'Hello'
     );
 
     return $result['text'];
+});
+
+Route::get('exceltest', function () {
+    //  Get Excel file
+    //  Show a cell of each line on the screen
+    $reader = IOFactory::createReaderForFile(Storage::path('demo.xls'));
+    $reader->setReadDataOnly(true);
+    $spreadsheet = $reader->load(Storage::path('demo.xls'));
+
+    $text = "";
+    for ($i = 4; $i < 104; $i++) {
+        $text .= $spreadsheet->getActiveSheet()->getCell('E' . $i) . "<br>";
+    }
+
+    return $text;
 });
