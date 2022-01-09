@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Shopify\Clients\Rest as ShopifyAPI;
 use Google\Cloud\Translate\V2\TranslateClient;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\CreateProductOnShopifyJob;
 
 class CreateShopifyProductsFromExcelCommand extends Command
 {
@@ -39,7 +39,7 @@ class CreateShopifyProductsFromExcelCommand extends Command
      *
      * @return int
      */
-    public function handle(ShopifyAPI $shopify)
+    public function handle()
     {
         //  Get Excel file
         //  Create a Shopify product with each line
@@ -83,14 +83,9 @@ class CreateShopifyProductsFromExcelCommand extends Command
 
             $this->line($productToCreate["title"] . " creating with " . count($productToCreate["images"]) . " images...");
 
-            $response = $shopify->post(
-                "products",
-                [
-                    "product" => $productToCreate
-                ]
-            );
+            $dispatchedJob = CreateProductOnShopifyJob::dispatch($productToCreate);
 
-            $this->info("Create product process resulted with " . $response->getStatusCode() . " code.");
+            $this->info("Create product job has been dipatched.");
             $this->line(" ");
         }
 
