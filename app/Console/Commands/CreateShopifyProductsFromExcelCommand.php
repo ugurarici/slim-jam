@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\DTO\Product;
 use Illuminate\Console\Command;
 use Google\Cloud\Translate\V2\TranslateClient;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -43,48 +44,10 @@ class CreateShopifyProductsFromExcelCommand extends Command
     {
         //  Get Excel file
         $spreadsheet = IOFactory::load(Storage::path('demo.xls'));
-        $worksheet = $spreadsheet->getActiveSheet();
-        $highestRow = $worksheet->getHighestRow();
-
+        $highestRow = $spreadsheet->getActiveSheet()->getHighestRow();
         $this->line("Excel has " . $highestRow . " lines. It means it has " . ((int)$highestRow - 3) . " products.");
 
-        $imageUrlColumns = ["AZ", "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BJ"];
-
-        $productsData = [];
-
-        for ($i = 4; $i <= $highestRow; $i++) {
-            $productData = [
-                "code" => $worksheet->getCell("E" . $i)->getValue(),
-                "brand" => $worksheet->getCell("F" . $i)->getValue(),
-                "type" => $worksheet->getCell("I" . $i)->getValue(),
-                "width" => $worksheet->getCell("Y" . $i)->getValue(),
-                "height" => $worksheet->getCell("Z" . $i)->getValue(),
-                "length" => $worksheet->getCell("X" . $i)->getValue(),
-                "color" => explode("\n", $worksheet->getCell('AL' . $i)->getValue())[0],
-                "collection" => $worksheet->getCell("K" . $i)->getValue(),
-                "category" => $worksheet->getCell("J" . $i)->getValue(),
-                "price" => $worksheet->getCell("Q" . $i)->getValue(),
-                "images" => [],
-            ];
-
-            foreach ($imageUrlColumns as $column) {
-                if ($worksheet->getCell($column . $i)->getValue() != "") {
-                    $productData["images"][] = ["src" => $worksheet->getCell($column . $i)->getValue()];
-                }
-            }
-
-            $sizeParts = [];
-            foreach (["width", "height", "length"] as $column) {
-                if ($productData[$column] != "") {
-                    $sizeParts[] = $productData[$column];
-                }
-            }
-            $sizeBaseName = implode('x', $sizeParts);
-            $productData["sizeName"] = "";
-            if ($sizeBaseName != "") $productData["sizeName"] = $sizeBaseName . " cm";
-
-            $productsData[] = $productData;
-        }
+        $productsData = Product::createCollectionFromExcel($spreadsheet);
 
         //  Create a Shopify product with each line
         foreach ($productsData as $productData) {
