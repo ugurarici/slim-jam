@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\DTO\Product;
 use Illuminate\Console\Command;
-use Google\Cloud\Translate\V2\TranslateClient;
+use App\Helpers\TranslateHelper as TranslateClient;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\CreateProductOnShopifyJob;
@@ -51,22 +51,20 @@ class CreateShopifyProductsFromExcelCommand extends Command
 
             $productToCreate = [
                 "title" =>
-                $translater->translate($productData->type)['text'] . " " .
+                $translater->translate($productData->type) . " " .
                     $productData->collection . ", " .
-                    $translater->translate(
-                        $productData->color
-                    )['text'] . ", "
-                    . $productData->sizeName,
+                    $translater->translate($productData->color) . ", " .
+                    $productData->sizeName,
 
                 "body_html" => "<strong>" . $translater->translate(
                     $productData->type . " " . $productData->category
-                )['text'] . "!</strong>",
+                ) . "!</strong>",
 
                 "vendor" => $productData->brand,
 
                 "product_type" => $translater->translate(
                     $productData->type
-                )['text'],
+                ),
 
                 "variants" => [
                     [
@@ -80,7 +78,8 @@ class CreateShopifyProductsFromExcelCommand extends Command
 
             $this->line($productToCreate["title"] . " creating with " . count($productToCreate["images"]) . " images...");
 
-            $dispatchedJob = CreateProductOnShopifyJob::dispatch($productToCreate);
+            dump($productToCreate);
+            // $dispatchedJob = CreateProductOnShopifyJob::dispatch($productToCreate);
 
             $this->info("Create product job has been dipatched.");
             $this->line(" ");

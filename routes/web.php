@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use Shopify\Clients\Rest;
-use Google\Cloud\Translate\V2\TranslateClient;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\TranslateHelper as TranslateClient;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,11 +28,7 @@ Route::get('shopifytest', function (Rest $client) {
 });
 
 Route::get('translatetest', function (TranslateClient $translate) {
-    $result = $translate->translate(
-        'Hello'
-    );
-
-    return $result['text'];
+    return $translate->translate('Hello');
 });
 
 Route::get('exceltest', function () {
