@@ -78,8 +78,7 @@ class CreateShopifyProductsFromExcelCommand extends Command
 
             $this->line($productToCreate["title"] . " creating with " . count($productToCreate["images"]) . " images...");
 
-            dump($productToCreate);
-            // $dispatchedJob = CreateProductOnShopifyJob::dispatch($productToCreate);
+            $dispatchedJob = CreateProductOnShopifyJob::dispatch($productToCreate);
 
             $this->info("Create product job has been dipatched.");
             $this->line(" ");
