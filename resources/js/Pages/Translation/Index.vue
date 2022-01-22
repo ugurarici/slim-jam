@@ -8,6 +8,10 @@
 
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="flex items-center mb-4">
+          <input type="checkbox" v-model="isAutoSaveEnabled" id="chkAutoSave" />
+          <label for="chkAutoSave" class="ml-2">Auto Save</label>
+        </div>
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
           <div class="w-full mx-auto overflow-auto">
             <table class="table-auto w-full whitespace-no-wrap">
@@ -24,6 +28,7 @@
                   v-for="translation in translations"
                   :key="translation.id"
                   :translation="translation"
+                  :autosave="isAutoSaveEnabled"
                 />
               </tbody>
             </table>
@@ -44,6 +49,11 @@ export default defineComponent({
   components: {
     AppLayout,
     TranslationTableRow,
+  },
+  data() {
+    return {
+      isAutoSaveEnabled: true,
+    };
   },
 });
 </script>

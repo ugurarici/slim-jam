@@ -6,13 +6,16 @@
     <td class="p-2 w-4/12">
       <form @submit.prevent="updateTranslation" class="flex items-center">
         <input type="hidden" name="_method" value="PUT" />
+
         <input
           type="text"
-          class="rounded-l-lg border-2 border-indigo-500"
+          class="border-2 border-indigo-500"
           name="result"
           v-model="form.result"
+          @keyup="updateTranslationOnKeyUp"
         />
         <button
+          v-if="!autosave"
           type="submit"
           class="
             text-white
@@ -20,7 +23,6 @@
             px-4
             py-2
             border-indigo-500 border-2
-            rounded-r-lg
             hover:bg-indigo-700 hover:border-indigo-700
           "
         >
@@ -40,7 +42,7 @@ export default {
   components: {
     JetActionMessage,
   },
-  props: ["translation"],
+  props: ["translation", "autosave"],
   data() {
     return {
       form: this.$inertia.form({
@@ -55,6 +57,17 @@ export default {
         errorBag: "updateTranslation",
         preserveScroll: true,
       });
+    },
+    updateTranslationOnKeyUp() {
+      if (this.autosave) this.updateTranslation();
+    },
+  },
+  watch: {
+    autosave(value) {
+      //  TODO: şu anda yalnızca değişikliğe uğrayanlar arasındaki en sonuncuyu güncelliyor, tümü için ne yapabiliriz bakalım
+      if (this.form.isDirty && value) {
+        this.updateTranslation();
+      }
     },
   },
 };
