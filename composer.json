@@ -9,13 +9,16 @@
         "fruitcake/laravel-cors": "^2.0",
         "google/cloud-translate": "^1.12",
         "guzzlehttp/guzzle": "^7.0.1",
+        "inertiajs/inertia-laravel": "^0.5.2",
         "laravel/framework": "^8.75",
         "laravel/horizon": "^5.7",
+        "laravel/jetstream": "^2.6",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "phpoffice/phpspreadsheet": "^1.21",
         "psr/log": "^1.1",
-        "shopify/shopify-api": "^1.0"
+        "shopify/shopify-api": "^1.0",
+        "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

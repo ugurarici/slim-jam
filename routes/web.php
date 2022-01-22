@@ -1,10 +1,12 @@
 <?php
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Shopify\Clients\Rest;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\TranslateHelper as TranslateClient;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +20,12 @@ use App\Helpers\TranslateHelper as TranslateClient;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
 Route::get('shopifytest', function (Rest $client) {
@@ -45,3 +52,7 @@ Route::get('exceltest', function () {
 
     return $text;
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->name('dashboard');
