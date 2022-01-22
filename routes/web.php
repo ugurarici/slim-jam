@@ -59,5 +59,5 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 })->name('dashboard');
 
 Route::resource('translations', TranslationController::class)
-    ->only(['index'])
+    ->only(['index', 'update'])
     ->middleware(['auth:sanctum', 'verified']);
