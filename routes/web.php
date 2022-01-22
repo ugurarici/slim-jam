@@ -6,6 +6,7 @@ use Shopify\Clients\Rest;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\TranslateHelper as TranslateClient;
+use App\Http\Controllers\TranslationController;
 use Inertia\Inertia;
 
 /*
@@ -56,3 +57,7 @@ Route::get('exceltest', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
+
+Route::resource('translations', TranslationController::class)
+    ->only(['index'])
+    ->middleware(['auth:sanctum', 'verified']);
