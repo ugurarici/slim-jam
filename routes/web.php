@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Helpers\TranslateHelper as TranslateClient;
 use App\Http\Controllers\TranslationController;
 use Inertia\Inertia;
+use App\Jobs\CreateShopifyProductsFromExcelJob;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,3 +62,16 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 Route::resource('translations', TranslationController::class)
     ->only(['index', 'update'])
     ->middleware(['auth:sanctum', 'verified']);
+
+Route::middleware(['auth:sanctum', 'verified'])->get('import-excel', function () {
+    return Inertia::render('ImportExcel');
+})->name('import-excel');
+
+Route::middleware(['auth:sanctum', 'verified'])->post('import-excel', function () {
+    request()->validate([
+        'excel' => 'required|file|mimes:xls,xlsx,csv'
+    ]);
+    $filePath = request()->file('excel')->store('excels');
+    CreateShopifyProductsFromExcelJob::dispatch($filePath);
+    return redirect()->route('import-excel');
+})->name('upload-excel');

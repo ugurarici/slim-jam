@@ -31,6 +31,12 @@
                 >
                   Translations
                 </jet-nav-link>
+                <jet-nav-link
+                  :href="route('import-excel')"
+                  :active="route().current('import-excel')"
+                >
+                  Import Excel
+                </jet-nav-link>
               </div>
             </div>
 
@@ -305,6 +311,12 @@
               :active="route().current('translations.*')"
             >
               Translations
+            </jet-responsive-nav-link>
+            <jet-responsive-nav-link
+              :href="route('import-excel')"
+              :active="route().current('import-excel')"
+            >
+              Import Excel
             </jet-responsive-nav-link>
           </div>
 

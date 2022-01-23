@@ -5,8 +5,6 @@
     <td class="p-2 w-1/12">{{ translation.target }}</td>
     <td class="p-2 w-4/12">
       <form @submit.prevent="updateTranslation" class="flex items-center">
-        <input type="hidden" name="_method" value="PUT" />
-
         <input
           type="text"
           class="border-2 border-indigo-500"
