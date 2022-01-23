@@ -19,13 +19,19 @@ class CreateShopifyProductsFromExcelJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * Excel file path in storage/app dir
+     * @var $excelFilePath
+     */
+    public $excelFilePath;
+
+    /**
      * Create a new job instance.
-     *
+     * @param string $filePath
      * @return void
      */
-    public function __construct()
+    public function __construct($filePath)
     {
-        //
+        $this->excelFilePath = $filePath;
     }
 
     /**
@@ -36,7 +42,7 @@ class CreateShopifyProductsFromExcelJob implements ShouldQueue
     public function handle(TranslateClient $translater)
     {
         //  Get Excel file
-        $spreadsheet = IOFactory::load(Storage::path('demo.xls'));
+        $spreadsheet = IOFactory::load(Storage::path($this->excelFilePath));
         $productsData = Product::createCollectionFromExcel($spreadsheet);
 
         //  Create a Shopify product with each line

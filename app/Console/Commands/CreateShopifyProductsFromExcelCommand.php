@@ -12,7 +12,7 @@ class CreateShopifyProductsFromExcelCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'shopify:fromexcel';
+    protected $signature = 'shopify:fromexcel {file}';
 
     /**
      * The console command description.
@@ -38,7 +38,7 @@ class CreateShopifyProductsFromExcelCommand extends Command
      */
     public function handle()
     {
-        CreateShopifyProductsFromExcelJob::dispatch();
+        CreateShopifyProductsFromExcelJob::dispatch($this->argument('file'));
 
         $this->info("Finished");
     }
