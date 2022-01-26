@@ -69,10 +69,14 @@ class CreateShopifyProductsFromExcelJob implements ShouldQueue
                     [
                         "sku" => $productData->code,
                         "price" => $productData->price,
+                        "weight" => $productData->grossWeight,
+                        "weight_unit" => "kg",
                     ]
                 ],
 
                 "images" => $productData->images,
+
+                "metafields" => $productData->metafieldsForShopify(),
             ];
 
             $dispatchedJob = CreateProductOnShopifyJob::dispatch($productToCreate);

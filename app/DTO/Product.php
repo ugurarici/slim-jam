@@ -3,6 +3,7 @@
 namespace App\DTO;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Illuminate\Support\Str;
 
 class Product
 {
@@ -109,12 +110,25 @@ class Product
     public $color;
 
     /**
+     * Gross weight of product (with package)
+     * @var float
+     */
+    public $grossWeight;
+
+    /**
      * Image URLs of product
      * @var array<string>
      */
     public $images = [];
 
     /**
+     * metafields of product
+     * @var array<string>
+     */
+    public $metafields = [];
+
+    /**
+     * Create an array of Product object from an Excel file
      * @param Spreadsheet $spreadsheet
      * @return array<Product>
      */
@@ -129,6 +143,7 @@ class Product
         $highestRow = $worksheet->getHighestRow();
 
         $imageUrlColumns = ["AZ", "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BJ"];
+        $metafieldColumns = ["X", "Y", "Z", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AW", "AX"];
 
         $productsData = [];
 
@@ -145,6 +160,7 @@ class Product
             $product->collection = $worksheet->getCell("K" . $i)->getValue();
             $product->category = $worksheet->getCell("J" . $i)->getValue();
             $product->price = $worksheet->getCell("Q" . $i)->getValue();
+            $product->grossWeight = $worksheet->getCell("AB" . $i)->getValue();
 
             foreach ($imageUrlColumns as $column) {
                 if ($worksheet->getCell($column . $i)->getValue() != "") {
@@ -161,9 +177,34 @@ class Product
             $sizeBaseName = implode('x', $sizeParts);
             if ($sizeBaseName != "") $product->sizeName = $sizeBaseName . " cm";
 
+            foreach ($metafieldColumns as $column) {
+                if ($worksheet->getCell($column . $i)->getValue() != "") {
+                    $product->metafields[Str::slug($worksheet->getCell($column . "3")->getValue(), '_')] = $worksheet->getCell($column . $i)->getValue();
+                }
+            }
+
             $productsData[] = $product;
         }
 
         return $productsData;
+    }
+
+    /**
+     * Return metafields ready for Shopify import
+     * @return array<string>
+     */
+    public function metafieldsForShopify()
+    {
+        $metafieldsForShopify = [];
+
+        foreach ($this->metafields as $metafieldKey => $metafieldValue) {
+            $metafieldsForShopify[] = [
+                "key" => $metafieldKey,
+                "value" => $metafieldValue,
+                "namespace" => "filters"
+            ];
+        }
+
+        return $metafieldsForShopify;
     }
 }
