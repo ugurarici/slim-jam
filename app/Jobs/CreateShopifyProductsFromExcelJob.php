@@ -13,6 +13,7 @@ use App\Helpers\TranslateHelper as TranslateClient;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
 use App\Jobs\CreateProductOnShopifyJob;
+use Illuminate\Support\Str;
 
 class CreateShopifyProductsFromExcelJob implements ShouldQueue
 {
@@ -61,9 +62,9 @@ class CreateShopifyProductsFromExcelJob implements ShouldQueue
 
                 "vendor" => $productData->brand,
 
-                "product_type" => $translater->translate(
+                "product_type" => Str::upper($translater->translate(
                     $productData->type
-                ),
+                )),
 
                 "variants" => [
                     [
