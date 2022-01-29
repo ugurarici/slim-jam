@@ -25,7 +25,10 @@ class ShopifyServiceProvider extends ServiceProvider
                 $app->make(FileSessionStorage::class),
                 config('services.shopify.api_version'),
                 false,
-                true
+                true,
+                null,
+                '',
+                app('Psr\Log\LoggerInterface')
             );
 
             return new Rest(config('services.shopify.store_domain'));
