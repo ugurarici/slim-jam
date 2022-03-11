@@ -191,7 +191,7 @@ class Product
 
     /**
      * Return metafields ready for Shopify import
-     * @return array<string>
+     * @return array<array>
      */
     public function metafieldsForShopify()
     {
@@ -200,11 +200,27 @@ class Product
         foreach ($this->metafields as $metafieldKey => $metafieldValue) {
             $metafieldsForShopify[] = [
                 "key" => $metafieldKey,
+                "type" => "single_line_text_field",
                 "value" => $metafieldValue,
                 "namespace" => "filters"
             ];
         }
 
         return $metafieldsForShopify;
+    }
+
+    /**
+     * Return tags created from metafields
+     * @return array<string>
+     */
+    public function tagsForShopify()
+    {
+        $tags = [];
+
+        foreach ($this->metafieldsForShopify() as $metafield) {
+            $tags[] = "excel_filters_" . Str::slug($metafield["key"], '_') . "_" . Str::slug($metafield["value"], '_');
+        }
+
+        return $tags;
     }
 }
